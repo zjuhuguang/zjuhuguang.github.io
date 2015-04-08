@@ -62,10 +62,16 @@
 
     var sprites = [];
     var aliens = [];
+    var peaches = [];
 
     //The alien frequency
     var alienFrequency = 100;
     var alienTimer = 0;
+
+    //The peach frequency
+    var peachFrequency = 200;
+    var peachTimer = 0;
+
 
     //The background of the game
     var background = Object.create(spriteObject);
@@ -88,6 +94,9 @@
     var alienObjects = Object.create(spriteObject);
     alienObjects.sourceX = 32;
     alienObjects.isDestroyed = false;
+
+    var peachObjects = Object.create(spriteObject);
+    peachObjects.sourceX = 64;
 
 
 
@@ -171,6 +180,17 @@
         sprites.push(alien);
     }
 
+    function makePeach() {
+        var peach = Object.create(peachObjects);
+        peach.x  = 0 - peach.width;
+        var randomPosition = Math.floor(Math.random() * 10);
+        peach.y = randomPosition * peach.height;
+        peach.vx = 1;
+
+        peaches.push(peach);
+        sprites.push(peach);
+    }
+
     function update() {
         requestAnimationFrame(update, canvas);
 
@@ -208,13 +228,24 @@
 
         alienTimer++;
         if (alienTimer == alienFrequency) {
+
+            if (alienFrequency > 40) {
+                alienFrequency--;
+            }
+
             alienTimer = 0;
             makeAlien();
         }
 
-//        if (alienFrequency > 10) {
-  //          alienFrequency--;
-    //    }
+        peachTimer++;
+        if (peachTimer == peachFrequency) {
+
+            peachTimer = 0;
+            makePeach();
+
+        }
+
+
 
         //Move the cannon
         //cannon.x += cannon.vx;
@@ -222,6 +253,8 @@
         cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
         cannon.y = Math.max(0, Math.min(cannon.y + cannon.vy, canvas.height - cannon.height));
 
+
+        //Animation of aliens
         for(var i = 0; i < aliens.length; i++) {
             var alien = aliens[i];
             alien.y += alien.vy;
@@ -231,6 +264,11 @@
                 removeObject(alien, sprites);
                 output.innerHTML = point + "";
             }
+        }
+        //Animation of peaches
+        for(var i = 0; i < peaches.length; i++) {
+            var peach = peaches[i];
+            peach.x += peach.vx;
         }
 
 
